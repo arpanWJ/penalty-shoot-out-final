@@ -9,9 +9,11 @@ var football,
   scoreBoardImg;
 var targetTL, targetTR, targetL, targetR, targetImg;
 var shoot = 1,
-  goals = 0;
+  goals = 0,
+  jump=0;
 var save1 = 0;
-var resultFlag = 0;
+var resultFlag = 0,
+shootsLeft=6;
 function preload() {
   backgroundImg = loadImage("assets/background.jpg");
   footballImg = loadImage("assets/football.png");
@@ -82,27 +84,35 @@ function draw() {
   // console.log(" and save are "+save1);
   drawSprites();
   textSize(20);
+  fill("red");
   text(goals, width / 2 - 245, height / 3 - 160);
   text(save1, width / 2 - 245, height / 3 - 120);
   text("shoots completed:" + resultFlag, width / 2 - 245, height / 3 - 100);
+  text("shoots left:" + shootsLeft, width / 2 - 245, height / 3 - 80);
+  textSize(15);
+  fill("brown")
+  text("UP ARROW", height - 580, 200);
+  text("LEFT ARROW", height - 580, 430);
+  text("DOWN ARROW", height - 0, 200);
+  text("RIGHT ARROW", height - 0, 430);
 }
 // goalkepper movement
 function saves() {
-  if (keyDown("D")) {
+  if (jump<4&&jump>3) {
     goalkeeper.position.x = goalkeeper.position.x + 5;
     goalkeeper.changeAnimation("goalkeeperR", rightsaveImage);
   }
 
-  if (keyDown("A")) {
+  if (jump<2) {
     goalkeeper.position.x = goalkeeper.position.x - 5;
     goalkeeper.changeAnimation("goalkeeperL", leftsaveImage);
   }
-  if (keyDown("W")) {
+  if (jump>2&&jump<3) {
     goalkeeper.position.y = goalkeeper.position.y - 2.5;
     goalkeeper.position.x = goalkeeper.position.x - 2.5;
     goalkeeper.changeAnimation("goalkeeperTL", toprightsaveImage);
   }
-  if (keyDown("S")) {
+  if (jump>4) {
     goalkeeper.position.y = goalkeeper.position.y - 2.5;
     goalkeeper.position.x = goalkeeper.position.x + 2.5;
     goalkeeper.changeAnimation("goalkeeperTR", topleftsaveImage);
@@ -116,20 +126,26 @@ function shot() {
     football.y = height / 2 + 270;
     football.setVelocity(-4, -5);
     console.log("up" + shoot);
+    jump=random(1,2);
+    console.log(jump);
   }
   if (keyDown("LEFT_ARROW") && shoot === 1) {
     shoot = 2;
+    jump=random(1,2);
     football.x = width / 2;
     football.y = height / 2 + 270;
     football.setVelocity(-9, -5);
     console.log("up" + shoot);
+    console.log(jump);
   }
   if (keyDown("RIGHT_ARROW") && shoot === 1) {
     shoot = 2;
+    jump=random(3,5);
     football.x = width / 2;
     football.y = height / 2 + 270;
     football.setVelocity(9, -5);
     console.log("up" + shoot);
+    console.log(jump);
   }
 
   if (keyDown("DOWN_ARROW") && shoot === 1) {
@@ -138,6 +154,8 @@ function shot() {
     football.y = height / 2 + 270;
     football.setVelocity(20, -25);
     console.log("up" + shoot);
+    jump=random(3,5);
+    console.log(jump);
   }
 
   if (
@@ -160,6 +178,7 @@ function shot() {
 }
 function resetGoal() {
   shoot = 1;
+  jump=0;
   football.setVelocity(0, 0);
   football.position.x = width / 2;
   football.position.y = height / 2 + 270;
@@ -167,8 +186,9 @@ function resetGoal() {
   goalkeeper.position.y = height / 2 + 85;
   goalkeeper.changeAnimation("goalkeeper", goalkeeperImg);
   resultFlag = resultFlag + 1;
+  shootsLeft = shootsLeft - 1;
   console.log("to the end" + resultFlag);
-  if (resultFlag === 5) {
+  if (resultFlag === 6) {
     result();
   }
 }
