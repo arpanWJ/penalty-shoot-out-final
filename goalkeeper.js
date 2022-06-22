@@ -15,6 +15,9 @@ var save1 = 0;
 var resultFlag = 0,
 shootsLeft=6;
 var keeper=0;
+var whistle,win,cheering,win,lose;
+
+
 function preload() {
   backgroundImg = loadImage("assets/background.jpg");
   footballImg = loadImage("assets/football.png");
@@ -25,6 +28,10 @@ function preload() {
   toprightsaveImage = loadAnimation("assets/top-right-save-small.png");
   scoreBoardImg = loadImage("assets/scoreBoard.png");
   targetImg = loadImage("assets/target.png");
+ whistle = loadSound("audio/whistle.mp3");
+ cheering =loadSound("audio/cheering.mp3");
+ win = loadSound("audio/win.mp3");
+ lose = loadSound("audio/lose.mp3");
 }
 function setup() {
   createCanvas(732, 600);
@@ -81,7 +88,8 @@ function draw() {
     if (keyDown("SPACE")){
         jump=Math.round(random(1,4));
         shoot=1;
-        
+        whistle.play();
+  
     }
   }
 
@@ -174,6 +182,7 @@ function shot() {
     goals = goals + 1;
     console.log("goals are" + goals);
     console.log("saves are" + save1);
+    cheering.play();
   }
   if (football.collide(goalkeeper)) {
     save1 = save1 + 1;
@@ -199,10 +208,12 @@ function resetGoal() {
   }
 }
 function result() {
+  cheering.stop();
   shoot = 0;
   goalkeeper.visible = false;
   football.visible = false;
   if (save1 > goals) {
+    win.play();
     swal({
       title: `final whistle`,
       text: "goalkeeper wins",
@@ -216,6 +227,7 @@ function result() {
  
 
   if (save1 < goals) {
+    lose.play();
     swal({
       title: `final whistle`,
       text: "striker wins",
@@ -227,6 +239,7 @@ function result() {
   }
 
   if (save1 === goals) {
+    cheering.play();
     swal({
       title: `final whistle`,
       text: "its a tie",
